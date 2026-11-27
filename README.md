@@ -24,7 +24,7 @@ Planned: `network-reliability`, `network-expand`, `network-economics`.
 - **Out:** multiphase, looped networks, outage Monte Carlo, MIP expansion, HTTP
 
 Segment friction comes from `landmark-pipeline-core` (`pipeline-physics`).
-FieldVET prices projects once hydraulics supply feasible capacities.
+Field Network prices projects once hydraulics supply feasible capacities.
 
 ## Develop
 
@@ -43,6 +43,6 @@ cargo test -p network-hydraulics
 cargo run -p network-hydraulics --example dump_capacity
 ```
 
-Capacity numbers feed `landmark-fieldvet` `examples.two_pad_tie_in`, which
+Capacity numbers feed `landmark-field-network` `examples.two_pad_tie_in`, which
 enumerates pad A / pad B / both / both+upgrade and reports NPV plus compressor
 capex breakeven.

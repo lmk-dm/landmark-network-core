@@ -1,14 +1,14 @@
-//! Keep FieldVET's embedded Mcf capacities aligned with this fixture.
+//! Keep Field Network's embedded Mcf capacities aligned with this fixture.
 
 use network_hydraulics::{evaluate_two_pad_capacity, two_pad_gathering, TwoPadScenario};
 
-/// Values copied into `landmark_fieldvet.examples.two_pad_tie_in`.
-const FIELDVET_NOMINATED_MCF_D: f64 = 13_491.906708;
-const FIELDVET_BASE_MAX_EQUAL_MCF_D: f64 = 10_535.587006;
-const FIELDVET_UPGRADE_MAX_EQUAL_MCF_D: f64 = 21_170.597066;
+/// Values copied into `landmark_field_network.examples.two_pad_tie_in`.
+const FIELD_NETWORK_NOMINATED_MCF_D: f64 = 13_491.906708;
+const FIELD_NETWORK_BASE_MAX_EQUAL_MCF_D: f64 = 10_535.587006;
+const FIELD_NETWORK_UPGRADE_MAX_EQUAL_MCF_D: f64 = 21_170.597066;
 
 #[test]
-fn fieldvet_embedded_rates_match_hydraulics() {
+fn field_network_embedded_rates_match_hydraulics() {
     let case = two_pad_gathering();
     let gas = &case.hydraulics.gas;
     let report = evaluate_two_pad_capacity(&case, 48.0).unwrap();
@@ -17,10 +17,10 @@ fn fieldvet_embedded_rates_match_hydraulics() {
     let base = report.case(TwoPadScenario::BothPads).unwrap();
     let upgrade = report.case(TwoPadScenario::BothPadsWithUpgrade).unwrap();
 
-    assert!((nominated - FIELDVET_NOMINATED_MCF_D).abs() < 1e-3);
-    assert!((gas.kg_s_to_mcf_d(base.max_equal_pad_rate_kg_s) - FIELDVET_BASE_MAX_EQUAL_MCF_D).abs() < 1e-3);
+    assert!((nominated - FIELD_NETWORK_NOMINATED_MCF_D).abs() < 1e-3);
+    assert!((gas.kg_s_to_mcf_d(base.max_equal_pad_rate_kg_s) - FIELD_NETWORK_BASE_MAX_EQUAL_MCF_D).abs() < 1e-3);
     assert!(
-        (gas.kg_s_to_mcf_d(upgrade.max_equal_pad_rate_kg_s) - FIELDVET_UPGRADE_MAX_EQUAL_MCF_D).abs()
+        (gas.kg_s_to_mcf_d(upgrade.max_equal_pad_rate_kg_s) - FIELD_NETWORK_UPGRADE_MAX_EQUAL_MCF_D).abs()
             < 1e-3
     );
 }

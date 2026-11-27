@@ -29,7 +29,7 @@ exclusive_capabilities:
 integrates_with:
 - landmark-pipeline-core
 - landmark-surface-development
-- landmark-fieldvet
+- landmark-field-network
 decision_system_role: domain_science
 implements:
 - model
