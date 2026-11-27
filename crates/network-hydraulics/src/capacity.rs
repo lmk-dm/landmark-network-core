@@ -1,8 +1,28 @@
 //! Feasible deliverability from a fixed network under pad nominations.
 
+use serde::{Deserialize, Serialize};
+
 use crate::error::{HydraulicsError, Result};
-use crate::fixtures::two_pad::{TwoPadCase, TwoPadScenario};
+use crate::fixtures::two_pad::{two_pad_gathering, TwoPadCase, TwoPadScenario};
 use crate::result::{ConstraintStatus, SteadyStateResult};
+
+/// Machine contract for Field Network (and other consumers) of two-pad capacities.
+///
+/// Produced by [`dump_two_pad_capacity`] / `cargo run -p network-hydraulics --example dump_capacity`.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TwoPadCapacityDump {
+    pub schema: String,
+    pub fixture: String,
+    pub source: String,
+    pub outage_duration_hours: f64,
+    pub pad_rate_kg_s: f64,
+    pub nominated_mcf_d_per_pad: f64,
+    pub base_max_equal_mcf_d: f64,
+    pub upgrade_max_equal_mcf_d: f64,
+    pub outage_undelivered_mcf: f64,
+}
+
+pub const TWO_PAD_CAPACITY_SCHEMA: &str = "network-hydraulics.two_pad_capacity.v1";
 
 /// One network configuration evaluated against the same pad nominations.
 #[derive(Debug, Clone, PartialEq)]
@@ -40,6 +60,32 @@ impl CapacityReport {
     pub fn case(&self, scenario: TwoPadScenario) -> Option<&CapacityCase> {
         self.cases.iter().find(|c| c.scenario == scenario)
     }
+}
+
+/// Evaluate the two-pad gathering fixture and emit the Field Network capacity contract.
+pub fn dump_two_pad_capacity(outage_duration_hours: f64) -> Result<TwoPadCapacityDump> {
+    let case = two_pad_gathering();
+    let report = evaluate_two_pad_capacity(&case, outage_duration_hours)?;
+    let gas = &case.hydraulics.gas;
+    let base = report
+        .case(TwoPadScenario::BothPads)
+        .ok_or_else(|| HydraulicsError::InvalidInput("missing both_pads case".into()))?;
+    let upgrade = report
+        .case(TwoPadScenario::BothPadsWithUpgrade)
+        .ok_or_else(|| HydraulicsError::InvalidInput("missing upgrade case".into()))?;
+    // Match dump_capacity historical print: undelivered_sm3 / 28.316846592 → Mcf.
+    let undelivered_mcf = report.outage.undelivered_sm3 / 28.316846592;
+    Ok(TwoPadCapacityDump {
+        schema: TWO_PAD_CAPACITY_SCHEMA.into(),
+        fixture: "two_pad_gathering".into(),
+        source: "network-hydraulics.dump_two_pad_capacity".into(),
+        outage_duration_hours,
+        pad_rate_kg_s: case.pad_rate_kg_s,
+        nominated_mcf_d_per_pad: gas.kg_s_to_mcf_d(case.pad_rate_kg_s),
+        base_max_equal_mcf_d: gas.kg_s_to_mcf_d(base.max_equal_pad_rate_kg_s),
+        upgrade_max_equal_mcf_d: gas.kg_s_to_mcf_d(upgrade.max_equal_pad_rate_kg_s),
+        outage_undelivered_mcf: undelivered_mcf,
+    })
 }
 
 /// Evaluate base, upgrade, and outage configurations for the two-pad fixture.

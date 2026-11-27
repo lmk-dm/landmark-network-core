@@ -1,27 +1,31 @@
-//! Keep Field Network's embedded Mcf capacities aligned with this fixture.
+//! Field Network must consume [`dump_two_pad_capacity`], not hand-copied Mcf figures.
 
-use network_hydraulics::{evaluate_two_pad_capacity, two_pad_gathering, TwoPadScenario};
-
-/// Values copied into `landmark_field_network.examples.two_pad_tie_in`.
-const FIELD_NETWORK_NOMINATED_MCF_D: f64 = 13_491.906708;
-const FIELD_NETWORK_BASE_MAX_EQUAL_MCF_D: f64 = 10_535.587006;
-const FIELD_NETWORK_UPGRADE_MAX_EQUAL_MCF_D: f64 = 21_170.597066;
+use network_hydraulics::{
+    dump_two_pad_capacity, evaluate_two_pad_capacity, two_pad_gathering, TwoPadScenario,
+    TWO_PAD_CAPACITY_SCHEMA,
+};
 
 #[test]
-fn field_network_embedded_rates_match_hydraulics() {
+fn dump_contract_matches_evaluated_rates() {
     let case = two_pad_gathering();
     let gas = &case.hydraulics.gas;
     let report = evaluate_two_pad_capacity(&case, 48.0).unwrap();
+    let dump = dump_two_pad_capacity(48.0).unwrap();
+
+    assert_eq!(dump.schema, TWO_PAD_CAPACITY_SCHEMA);
+    assert_eq!(dump.fixture, "two_pad_gathering");
 
     let nominated = gas.kg_s_to_mcf_d(case.pad_rate_kg_s);
     let base = report.case(TwoPadScenario::BothPads).unwrap();
     let upgrade = report.case(TwoPadScenario::BothPadsWithUpgrade).unwrap();
 
-    assert!((nominated - FIELD_NETWORK_NOMINATED_MCF_D).abs() < 1e-3);
-    assert!((gas.kg_s_to_mcf_d(base.max_equal_pad_rate_kg_s) - FIELD_NETWORK_BASE_MAX_EQUAL_MCF_D).abs() < 1e-3);
+    assert!((dump.nominated_mcf_d_per_pad - nominated).abs() < 1e-9);
     assert!(
-        (gas.kg_s_to_mcf_d(upgrade.max_equal_pad_rate_kg_s) - FIELD_NETWORK_UPGRADE_MAX_EQUAL_MCF_D).abs()
-            < 1e-3
+        (dump.base_max_equal_mcf_d - gas.kg_s_to_mcf_d(base.max_equal_pad_rate_kg_s)).abs() < 1e-9
+    );
+    assert!(
+        (dump.upgrade_max_equal_mcf_d - gas.kg_s_to_mcf_d(upgrade.max_equal_pad_rate_kg_s)).abs()
+            < 1e-9
     );
 }
 

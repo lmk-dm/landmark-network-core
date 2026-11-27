@@ -22,7 +22,8 @@ pub mod solve;
 pub mod spec;
 
 pub use capacity::{
-    evaluate_two_pad_capacity, max_equal_pad_rate, CapacityCase, CapacityReport, OutageImpact,
+    dump_two_pad_capacity, evaluate_two_pad_capacity, max_equal_pad_rate, CapacityCase,
+    CapacityReport, OutageImpact, TwoPadCapacityDump, TWO_PAD_CAPACITY_SCHEMA,
 };
 pub use error::{HydraulicsError, Result};
 pub use fixtures::two_pad::{two_pad_gathering, TwoPadCase, TwoPadScenario};
