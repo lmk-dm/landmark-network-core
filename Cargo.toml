@@ -1,0 +1,23 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/network-core",
+    "crates/network-hydraulics",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "proprietary"
+authors = ["Kyle Jones"]
+repository = "https://github.com/lmk-dm/landmark-network-core"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+
+network-core = { path = "crates/network-core" }
+network-hydraulics = { path = "crates/network-hydraulics" }
+pipeline-physics = { path = "../landmark-pipeline-core/crates/physics" }

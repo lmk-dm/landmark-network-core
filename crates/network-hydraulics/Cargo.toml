@@ -1,0 +1,16 @@
+[package]
+name = "network-hydraulics"
+description = "Steady-state dry-gas hydraulics on Landmark field networks"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+network-core = { workspace = true }
+pipeline-physics = { workspace = true }
+serde = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

@@ -1,0 +1,36 @@
+name: landmark-network-core
+version: 0.1.0
+architecture_layer: domain_science
+description: >
+  Canonical oil and gas field network model for Landmark Network Intelligence:
+  typed nodes, edges, topology, identity hashes, and structural validation.
+  Owns the persistent network representation. Does not own multiphase hydraulics
+  (network-hydraulics), reliability (network-reliability), expansion optimization
+  (network-expand), or investment economics (network-economics / ARIES bridge).
+  Segment pipe physics remains in landmark-pipeline-core; this crate owns the
+  field-scale graph those engines attach to.
+consumes: []
+produces:
+- scientific_result
+interfaces:
+  cli: false
+  api: false
+  python: false
+storage:
+  iceberg: false
+  postgres: false
+  postgis: false
+  object_storage: false
+capabilities:
+- field_network_topology
+- dry_gas_network_solve
+exclusive_capabilities:
+- field_network_topology
+integrates_with:
+- landmark-pipeline-core
+- landmark-surface-development
+- landmark-fieldvet
+decision_system_role: domain_science
+implements:
+- model
+contracts_version: '1'
