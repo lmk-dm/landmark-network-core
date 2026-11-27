@@ -40,6 +40,13 @@ impl GasProperties {
     pub fn density_at(&self, pressure_pa: f64) -> f64 {
         pressure_pa / (self.z_factor * self.specific_gas_constant * self.temperature_k)
     }
+
+    /// Convert mass flow (kg/s) to Mcf/d at 101.325 kPa and the gas temperature.
+    pub fn kg_s_to_mcf_d(&self, mass_flow_kg_s: f64) -> f64 {
+        let rho = self.density_at(101_325.0);
+        let m3_s = mass_flow_kg_s / rho;
+        m3_s / 28.316846592 * 86_400.0
+    }
 }
 
 /// Circular pipe geometry for one edge.

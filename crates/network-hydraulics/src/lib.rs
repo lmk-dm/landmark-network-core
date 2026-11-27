@@ -13,6 +13,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod capacity;
 pub mod error;
 pub mod fixtures;
 pub mod gas;
@@ -20,6 +21,9 @@ pub mod result;
 pub mod solve;
 pub mod spec;
 
+pub use capacity::{
+    evaluate_two_pad_capacity, max_equal_pad_rate, CapacityCase, CapacityReport, OutageImpact,
+};
 pub use error::{HydraulicsError, Result};
 pub use fixtures::two_pad::{two_pad_gathering, TwoPadCase, TwoPadScenario};
 pub use gas::{

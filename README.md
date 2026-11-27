@@ -37,3 +37,12 @@ cargo test --workspace
 `network_hydraulics::two_pad_gathering` — two pads, shared trunk, compressor.
 Each pad alone is feasible; both together breach a pressure ceiling; an upgraded
 compressor clears the breach.
+
+```bash
+cargo test -p network-hydraulics
+cargo run -p network-hydraulics --example dump_capacity
+```
+
+Capacity numbers feed `landmark-fieldvet` `examples.two_pad_tie_in`, which
+enumerates pad A / pad B / both / both+upgrade and reports NPV plus compressor
+capex breakeven.
